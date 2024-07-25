@@ -3,9 +3,9 @@ const sharp = require("sharp");
 const fs = require("fs");
 
 const app = express();
+const PORT = 3000;
 
 app.get("/:greyscale(g)?/:width/:height?", async (req, res) => {
-  console.info(req.params);
   function dimensionsFromParams({ width: widthParam, height: heightParam }) {
     if (widthParam && !heightParam) {
       if (!parseInt(widthParam)) {
@@ -48,7 +48,6 @@ app.get("/:greyscale(g)?/:width/:height?", async (req, res) => {
     fs.existsSync(`./public/kitty${req.query.image}.jpg`)
   ) {
     src = `./public/kitty${req.query.image}.jpg`;
-    console.log(src);
   } else {
     src = `./public/kitty${getRandomIntInclusive(1, 16)}.jpg`;
   }
@@ -58,13 +57,17 @@ app.get("/:greyscale(g)?/:width/:height?", async (req, res) => {
     const dimensions = dimensionsFromParams(req.params);
     if (req.params.greyscale === "g") {
       img = await sharp(src)
-        .resize(dimensions.width, dimensions.height)
+        .resize(dimensions.width, dimensions.height, {
+          position: sharp.strategy.entropy,
+        })
         .greyscale()
         .toFormat("jpg")
         .toBuffer();
     } else {
       img = await sharp(src)
-        .resize(dimensions.width, dimensions.height)
+        .resize(dimensions.width, dimensions.height, {
+          // position: sharp.strategy.attention,
+        })
         .toFormat("jpg")
         .toBuffer();
     }
@@ -74,6 +77,6 @@ app.get("/:greyscale(g)?/:width/:height?", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("listening on port 3000");
+app.listen(PORT, () => {
+  console.info(`Server listening on port ${PORT}`);
 });
