@@ -15,13 +15,9 @@ app.get("/:greyscale(g)?/:width/:height?", async (req, res) => {
     }
 
     if (widthParam && heightParam) {
-      // if width params are bad and height params are good, use height for both
-      // if height params are bad and width params are good, use width for both
-      // if both params are good, parse them and use them
       if (parseInt(widthParam) === NaN && parseInt(heightParam) === NaN) {
         return { width: 400, height: 400 };
       } else if (parseInt(widthParam) === NaN && parseInt(heightParam)) {
-        dimensions.width, (dimensions.length = parseInt(heightParam));
         return { width: parseInt(heightParam), height: parseInt(heightParam) };
       } else if (parseInt(heightParam) === NaN && parseInt(widthParam)) {
         return { width: parseInt(widthParam), height: parseInt(widthParam) };
