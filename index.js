@@ -36,7 +36,12 @@ app.get("/:greyscale(g)?/:width/:height?", async (req, res) => {
     res.send(errorCat);
   }
 
-  // first, obtain the target image or a random image if none specified
+  function getRandomIntInclusive(min, max) {
+    const minCeiled = Math.ceil(min);
+    const maxFloored = Math.floor(max);
+    return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // The maximum is inclusive and the minimum is inclusive
+  }
+
   let src = "";
   if (
     req.query.image &&
@@ -45,8 +50,7 @@ app.get("/:greyscale(g)?/:width/:height?", async (req, res) => {
     src = `./public/kitty${req.query.image}.jpg`;
     console.log(src);
   } else {
-    // TODO - otherwise grab a random cat - landscape or portrait depending on params
-    src = `./public/kitty1.jpg`;
+    src = `./public/kitty${getRandomIntInclusive(1, 16)}.jpg`;
   }
 
   try {
